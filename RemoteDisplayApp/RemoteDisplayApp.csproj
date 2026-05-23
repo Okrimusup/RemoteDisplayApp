@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <PackageReference Include="ScreenCapture.NET.DX11" Version="3.0.0" />
-    <PackageReference Include="System.Management" Version="11.0.0-preview.4.26230.115" />
     <PackageReference Include="System.Text.Json" Version="11.0.0-preview.4.26230.115" />
   </ItemGroup>
 

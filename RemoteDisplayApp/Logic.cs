@@ -8,7 +8,6 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
-using System.Management;
 using System.Windows.Forms;
 using System.Diagnostics;
 
@@ -25,7 +24,7 @@ namespace RemoteDisplayApp
         private static TcpClient? currentClient;
         private static bool isProcessing = false;
         public static bool isServerRunning = false;
-        private static bool shouldRestartServer = true;
+        public static bool shouldRestartServer = true;
         private static Screen? currentScreen;
         private static int buffer = -1;
 
@@ -88,15 +87,12 @@ namespace RemoteDisplayApp
 
                     var options = new JsonSerializerOptions { WriteIndented = true };
                     var jsonDict = new Dictionary<string, JsonElement>();
-
-                    // Копируем все существующие группы
                     foreach (var property in root.EnumerateObject())
                     {
                         if (property.Name == group)
                         {
-                            // Обновляем значения в целевой группе
-                            // Преобразуем settings в JsonElement для сохранения структуры
                             var settingsJson = JsonSerializer.Serialize(settings);
+
                             using (JsonDocument settingsDoc = JsonDocument.Parse(settingsJson))
                             {
                                 jsonDict[group] = settingsDoc.RootElement.Clone();
@@ -104,7 +100,6 @@ namespace RemoteDisplayApp
                         }
                         else
                         {
-                            // Копируем остальные группы как есть
                             jsonDict[property.Name] = property.Value.Clone();
                         }
                     }
@@ -146,10 +141,20 @@ namespace RemoteDisplayApp
                 try
                 {
                     List<object> list = new List<object>();
-                    var displays = screenCaptureService?.GetDisplays(screenCaptureService.GetGraphicsCards().First()).ToList();
-                    foreach (var display in displays)
+                    var graphicsCards = screenCaptureService?.GetGraphicsCards();
+                    if (graphicsCards != null && graphicsCards.Any())
                     {
-                        list.Add(display.DeviceName);
+                        foreach (var card in graphicsCards)
+                        {
+                            var displays = screenCaptureService?.GetDisplays(card).ToList();
+                            if (displays != null)
+                            {
+                                foreach (var display in displays)
+                                {
+                                    list.Add(display.DeviceName);
+                                }
+                            }
+                        }
                     }
                     return list;
                 }
@@ -165,10 +170,7 @@ namespace RemoteDisplayApp
                 {
                     if (displayN != buffer)
                     {
-                        Debug.WriteLine("Buffer: " + buffer);
-                        Debug.WriteLine("displayN: " + displayN);
 
-                        // Освобождаем старые ресурсы перед инициализацией новых
                         DisposeDX11Capture();
 
                         screenCaptureService = new DX11ScreenCaptureService();
@@ -180,18 +182,31 @@ namespace RemoteDisplayApp
                             return;
                         }
 
-                        var displays = screenCaptureService.GetDisplays(graphicsCards.First());
-                        if (!displays.Any())
+                        // Собрать все дисплеи со всех графических карт
+                        var allDisplays = new List<dynamic>();
+                        foreach (var card in graphicsCards)
+                        {
+                            var displays = screenCaptureService.GetDisplays(card).ToList();
+                            allDisplays.AddRange(displays);
+                        }
+
+                        if (!allDisplays.Any())
                         {
                             Log($"Не найдено мониторов", LogLevel.Error);
                             return;
                         }
 
-                        screenCapture = screenCaptureService.GetScreenCapture(displays.ElementAt(displayN));
+                        if (displayN >= allDisplays.Count)
+                        {
+                            Log($"Монитор с индексом {displayN} не найден", LogLevel.Error);
+                            return;
+                        }
+
+                        screenCapture = screenCaptureService.GetScreenCapture(allDisplays[displayN]);
                         currentScreen = Screen.AllScreens.ElementAtOrDefault(displayN) ?? Screen.PrimaryScreen;
 
                         captureZone = screenCapture.RegisterCaptureZone(0, 0, screenCapture.Display.Width, screenCapture.Display.Height);
-                        Log($"Захват экрана монитора {displays.ElementAt(displayN).DeviceName} инициализирован");
+                        Log($"Захват экрана монитора {allDisplays[displayN].DeviceName} инициализирован");
                     }
                     buffer = displayN;
                 }
@@ -343,7 +358,6 @@ namespace RemoteDisplayApp
         }
 
         const int CURSOR_SHOWING = 0x00000001;
-
         [DllImport("user32.dll")]
         static extern bool GetCursorInfo(out CURSORINFO pCursorInfo);
         [DllImport("user32.dll")]
@@ -411,26 +425,34 @@ namespace RemoteDisplayApp
             }
         public static Bitmap ResizeImage(Bitmap source, int maxWidth, int maxHeight)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
-            if (maxWidth <= 0 || maxHeight <= 0)
+            try
             {
-                return new Bitmap(1, 1, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                if (maxWidth <= 0 || maxHeight <= 0)
+                {
+                    return new Bitmap(1, 1, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                }
+
+                double ratioX = (double)maxWidth / source.Width;
+                double ratioY = (double)maxHeight / source.Height;
+                double ratio = Math.Min(ratioX, ratioY);
+
+                int newWidth = Math.Max(1, (int)(source.Width * ratio));
+                int newHeight = Math.Max(1, (int)(source.Height * ratio));
+
+                var result = new Bitmap(newWidth, newHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                using (Graphics g = Graphics.FromImage(result))
+                {
+                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    g.DrawImage(source, 0, 0, newWidth, newHeight);
+                }
+                return result;
             }
-
-            double ratioX = (double)maxWidth / source.Width;
-            double ratioY = (double)maxHeight / source.Height;
-            double ratio = Math.Min(ratioX, ratioY);
-
-            int newWidth = Math.Max(1, (int)(source.Width * ratio));
-            int newHeight = Math.Max(1, (int)(source.Height * ratio));
-
-            var result = new Bitmap(newWidth, newHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            using (Graphics g = Graphics.FromImage(result))
-            {
-                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                g.DrawImage(source, 0, 0, newWidth, newHeight);
+            catch(Exception ex) 
+            { 
+                Log("Ошибка при изменении размера изображения: " + ex.Message, LogLevel.Error);
+                return null;
             }
-            return result;
+            
         }
         public static byte[] EncodeToJpeg(Bitmap bmp, int quality = 75)
         {
@@ -480,12 +502,6 @@ namespace RemoteDisplayApp
             CloseConnection();
             DisposeDX11Capture();
             Log("Сервер остановлен");
-        }
-
-
-        public async static Task SendFrameAsync(Size settingResolution, int settingCompression)
-        {
-           
         }
     }
 }

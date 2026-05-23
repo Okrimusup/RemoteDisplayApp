@@ -109,7 +109,7 @@
             MainControl.Location = new Point(0, 0);
             MainControl.Name = "MainControl";
             MainControl.SelectedIndex = 0;
-            MainControl.Size = new Size(414, 161);
+            MainControl.Size = new Size(414, 456);
             MainControl.TabIndex = 0;
             MainControl.SelectedIndexChanged += tabControl1_SelectedIndexChanged;
             // 
@@ -119,7 +119,7 @@
             Main_tp.Controls.Add(panel1);
             Main_tp.Location = new Point(4, 24);
             Main_tp.Name = "Main_tp";
-            Main_tp.Size = new Size(406, 133);
+            Main_tp.Size = new Size(406, 428);
             Main_tp.TabIndex = 2;
             Main_tp.Text = "Главная";
             Main_tp.UseVisualStyleBackColor = true;
@@ -212,7 +212,7 @@
             Monitor_tp.Location = new Point(4, 24);
             Monitor_tp.Name = "Monitor_tp";
             Monitor_tp.Padding = new Padding(3);
-            Monitor_tp.Size = new Size(406, 133);
+            Monitor_tp.Size = new Size(406, 428);
             Monitor_tp.TabIndex = 0;
             Monitor_tp.Text = "Монитор";
             Monitor_tp.UseVisualStyleBackColor = true;
@@ -255,7 +255,7 @@
             Preview_tp.Location = new Point(4, 24);
             Preview_tp.Name = "Preview_tp";
             Preview_tp.Padding = new Padding(3);
-            Preview_tp.Size = new Size(406, 133);
+            Preview_tp.Size = new Size(406, 428);
             Preview_tp.TabIndex = 1;
             Preview_tp.Text = "Предпросмотр";
             Preview_tp.UseVisualStyleBackColor = true;
@@ -265,7 +265,7 @@
             pictureBox1.Dock = DockStyle.Fill;
             pictureBox1.Location = new Point(3, 3);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(400, 127);
+            pictureBox1.Size = new Size(400, 422);
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
             // 
@@ -278,7 +278,7 @@
             Stats_tp.Controls.Add(CapturedFpsStatL);
             Stats_tp.Location = new Point(4, 24);
             Stats_tp.Name = "Stats_tp";
-            Stats_tp.Size = new Size(406, 133);
+            Stats_tp.Size = new Size(406, 428);
             Stats_tp.TabIndex = 3;
             Stats_tp.Text = "Статистика";
             Stats_tp.UseVisualStyleBackColor = true;
@@ -289,9 +289,8 @@
             EncodeTimeStatL.Font = new Font("Segoe UI", 12F);
             EncodeTimeStatL.Location = new Point(8, 113);
             EncodeTimeStatL.Name = "EncodeTimeStatL";
-            EncodeTimeStatL.Size = new Size(61, 21);
+            EncodeTimeStatL.Size = new Size(0, 21);
             EncodeTimeStatL.TabIndex = 4;
-            EncodeTimeStatL.Text = "label17";
             // 
             // NetworkStatL
             // 
@@ -299,9 +298,8 @@
             NetworkStatL.Font = new Font("Segoe UI", 12F);
             NetworkStatL.Location = new Point(8, 88);
             NetworkStatL.Name = "NetworkStatL";
-            NetworkStatL.Size = new Size(61, 21);
+            NetworkStatL.Size = new Size(0, 21);
             NetworkStatL.TabIndex = 3;
-            NetworkStatL.Text = "label17";
             // 
             // FrameSizeStatL
             // 
@@ -309,9 +307,8 @@
             FrameSizeStatL.Font = new Font("Segoe UI", 12F);
             FrameSizeStatL.Location = new Point(8, 63);
             FrameSizeStatL.Name = "FrameSizeStatL";
-            FrameSizeStatL.Size = new Size(61, 21);
+            FrameSizeStatL.Size = new Size(0, 21);
             FrameSizeStatL.TabIndex = 2;
-            FrameSizeStatL.Text = "label17";
             // 
             // SentFpsStatL
             // 
@@ -319,9 +316,8 @@
             SentFpsStatL.Font = new Font("Segoe UI", 12F);
             SentFpsStatL.Location = new Point(8, 37);
             SentFpsStatL.Name = "SentFpsStatL";
-            SentFpsStatL.Size = new Size(61, 21);
+            SentFpsStatL.Size = new Size(0, 21);
             SentFpsStatL.TabIndex = 1;
-            SentFpsStatL.Text = "label17";
             // 
             // CapturedFpsStatL
             // 
@@ -329,16 +325,16 @@
             CapturedFpsStatL.Font = new Font("Segoe UI", 12F);
             CapturedFpsStatL.Location = new Point(8, 10);
             CapturedFpsStatL.Name = "CapturedFpsStatL";
-            CapturedFpsStatL.Size = new Size(61, 21);
+            CapturedFpsStatL.Size = new Size(189, 21);
             CapturedFpsStatL.TabIndex = 0;
-            CapturedFpsStatL.Text = "label17";
+            CapturedFpsStatL.Text = "Трансляция не запущена";
             // 
             // Logs_tp
             // 
             Logs_tp.Controls.Add(LogRTS);
             Logs_tp.Location = new Point(4, 24);
             Logs_tp.Name = "Logs_tp";
-            Logs_tp.Size = new Size(406, 133);
+            Logs_tp.Size = new Size(406, 428);
             Logs_tp.TabIndex = 4;
             Logs_tp.Text = "Логи";
             Logs_tp.UseVisualStyleBackColor = true;
@@ -349,7 +345,7 @@
             LogRTS.Location = new Point(0, 0);
             LogRTS.Name = "LogRTS";
             LogRTS.ReadOnly = true;
-            LogRTS.Size = new Size(406, 133);
+            LogRTS.Size = new Size(406, 428);
             LogRTS.TabIndex = 0;
             LogRTS.Text = "";
             // 
@@ -380,7 +376,7 @@
             Settings_tp.Controls.Add(label2);
             Settings_tp.Location = new Point(4, 24);
             Settings_tp.Name = "Settings_tp";
-            Settings_tp.Size = new Size(406, 133);
+            Settings_tp.Size = new Size(406, 428);
             Settings_tp.TabIndex = 5;
             Settings_tp.Text = "Настройки";
             // 
@@ -459,7 +455,7 @@
             // 
             PortTB.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 204);
             PortTB.Location = new Point(135, 150);
-            PortTB.Maximum = new decimal(new int[] { 100000, 0, 0, 0 });
+            PortTB.Maximum = new decimal(new int[] { 65530, 0, 0, 0 });
             PortTB.Minimum = new decimal(new int[] { 1000, 0, 0, 0 });
             PortTB.Name = "PortTB";
             PortTB.Size = new Size(158, 29);
@@ -653,10 +649,11 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Control;
-            ClientSize = new Size(414, 161);
+            ClientSize = new Size(414, 456);
             Controls.Add(MainControl);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "Form1";
-            Text = "RemoteDisplayApp";
+            Text = "Мобильный дисплей сервер";
             Load += Form1_Load;
             MainControl.ResumeLayout(false);
             Main_tp.ResumeLayout(false);

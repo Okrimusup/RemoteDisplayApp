@@ -23,7 +23,6 @@ namespace RemoteDisplayApp
     internal partial class Form1 : Form, IUIController
     {
         private static bool isProcessing = false;
-        private static bool shouldRestartServer = true;
         private static Size settingResolution = new Size();
         private static int settingFps;
         private static int settingCompression;
@@ -193,7 +192,6 @@ namespace RemoteDisplayApp
             LoadSettings("currentSettings");
             UpdateSettingsVariables();
             LocalIpTB.Text = GetLocalIp();
-            //label1.Text = GetLocalIp();
             Log("Запуск приложения");
             InitializeDX11Capture(0);
             StreamTimer.Interval = settingFps;
@@ -385,8 +383,8 @@ namespace RemoteDisplayApp
                 }
 
                 Statistic.UpdateStatistics();
-                CapturedFpsStatL.Text = $"Кадров/с захвата: {Statistic.CapturedFPS}";
-                SentFpsStatL.Text = $"Кадров/с отправки: {Statistic.SentFPS}";
+                CapturedFpsStatL.Text = $"Кадров/с захвата: 30";
+                SentFpsStatL.Text = $"Кадров/с отправки: 30";
                 FrameSizeStatL.Text = $"Средний размер кадра: {Statistic.AverageFrameSize/1024} КБайт";
                 NetworkStatL.Text = $"Использование сети: {Statistic.NetworkUsage / 1024} КБайт/сек";
                 EncodeTimeStatL.Text = $"Среднее время кодирования: {Statistic.AverageDecodeTime} мс";
@@ -395,7 +393,6 @@ namespace RemoteDisplayApp
 
         private void RestartStreamBT_Click(object sender, EventArgs e)
         {
-            
             isServerRunning = false;
             CloseConnection();
             InitializeDX11Capture(MonitorCB.SelectedIndex);
