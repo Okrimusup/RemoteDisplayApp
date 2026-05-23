@@ -183,7 +183,7 @@ namespace RemoteDisplayApp
                         }
 
                         // Собрать все дисплеи со всех графических карт
-                        var allDisplays = new List<dynamic>();
+                        var allDisplays = new List<Display>();
                         foreach (var card in graphicsCards)
                         {
                             var displays = screenCaptureService.GetDisplays(card).ToList();
