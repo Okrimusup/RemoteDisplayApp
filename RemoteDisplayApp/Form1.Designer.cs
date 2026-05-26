@@ -40,6 +40,10 @@
             label7 = new Label();
             StreamStatusL = new Label();
             Monitor_tp = new TabPage();
+            OpenWindowsSettingsBT = new Button();
+            ReloadDisplaysBT = new Button();
+            RemoveDisplayBT = new Button();
+            AddDisplayBT = new Button();
             label15 = new Label();
             MonitorCB = new ComboBox();
             label16 = new Label();
@@ -109,7 +113,7 @@
             MainControl.Location = new Point(0, 0);
             MainControl.Name = "MainControl";
             MainControl.SelectedIndex = 0;
-            MainControl.Size = new Size(414, 456);
+            MainControl.Size = new Size(414, 162);
             MainControl.TabIndex = 0;
             MainControl.SelectedIndexChanged += tabControl1_SelectedIndexChanged;
             // 
@@ -119,7 +123,7 @@
             Main_tp.Controls.Add(panel1);
             Main_tp.Location = new Point(4, 24);
             Main_tp.Name = "Main_tp";
-            Main_tp.Size = new Size(406, 428);
+            Main_tp.Size = new Size(406, 134);
             Main_tp.TabIndex = 2;
             Main_tp.Text = "Главная";
             Main_tp.UseVisualStyleBackColor = true;
@@ -206,23 +210,71 @@
             // 
             // Monitor_tp
             // 
+            Monitor_tp.Controls.Add(OpenWindowsSettingsBT);
+            Monitor_tp.Controls.Add(ReloadDisplaysBT);
+            Monitor_tp.Controls.Add(RemoveDisplayBT);
+            Monitor_tp.Controls.Add(AddDisplayBT);
             Monitor_tp.Controls.Add(label15);
             Monitor_tp.Controls.Add(MonitorCB);
             Monitor_tp.Controls.Add(label16);
             Monitor_tp.Location = new Point(4, 24);
             Monitor_tp.Name = "Monitor_tp";
             Monitor_tp.Padding = new Padding(3);
-            Monitor_tp.Size = new Size(406, 428);
+            Monitor_tp.Size = new Size(406, 134);
             Monitor_tp.TabIndex = 0;
             Monitor_tp.Text = "Монитор";
             Monitor_tp.UseVisualStyleBackColor = true;
+            // 
+            // OpenWindowsSettingsBT
+            // 
+            OpenWindowsSettingsBT.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            OpenWindowsSettingsBT.Location = new Point(291, 50);
+            OpenWindowsSettingsBT.Name = "OpenWindowsSettingsBT";
+            OpenWindowsSettingsBT.Size = new Size(97, 74);
+            OpenWindowsSettingsBT.TabIndex = 14;
+            OpenWindowsSettingsBT.Text = "↗\r\nНастройки монитора\r\n";
+            OpenWindowsSettingsBT.UseVisualStyleBackColor = true;
+            OpenWindowsSettingsBT.Click += OpenWindowsSettingsBT_Click;
+            // 
+            // ReloadDisplaysBT
+            // 
+            ReloadDisplaysBT.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            ReloadDisplaysBT.Location = new Point(256, 15);
+            ReloadDisplaysBT.Name = "ReloadDisplaysBT";
+            ReloadDisplaysBT.Size = new Size(29, 29);
+            ReloadDisplaysBT.TabIndex = 13;
+            ReloadDisplaysBT.Text = "⟲";
+            ReloadDisplaysBT.UseVisualStyleBackColor = true;
+            ReloadDisplaysBT.Click += ReloadDisplaysBT_Click;
+            // 
+            // RemoveDisplayBT
+            // 
+            RemoveDisplayBT.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            RemoveDisplayBT.Location = new Point(10, 90);
+            RemoveDisplayBT.Name = "RemoveDisplayBT";
+            RemoveDisplayBT.Size = new Size(275, 34);
+            RemoveDisplayBT.TabIndex = 12;
+            RemoveDisplayBT.Text = "Удалить виртуальный монитор";
+            RemoveDisplayBT.UseVisualStyleBackColor = true;
+            RemoveDisplayBT.Click += RemoveDisplayBT_Click;
+            // 
+            // AddDisplayBT
+            // 
+            AddDisplayBT.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            AddDisplayBT.Location = new Point(10, 50);
+            AddDisplayBT.Name = "AddDisplayBT";
+            AddDisplayBT.Size = new Size(275, 34);
+            AddDisplayBT.TabIndex = 11;
+            AddDisplayBT.Text = "Добавить виртуальный монитор";
+            AddDisplayBT.UseVisualStyleBackColor = true;
+            AddDisplayBT.Click += AddDisplayBT_Click;
             // 
             // label15
             // 
             label15.AutoSize = true;
             label15.Cursor = Cursors.Help;
             label15.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 204);
-            label15.Location = new Point(295, 15);
+            label15.Location = new Point(291, 15);
             label15.Name = "label15";
             label15.Size = new Size(42, 30);
             label15.TabIndex = 10;
@@ -234,7 +286,7 @@
             MonitorCB.DropDownStyle = ComboBoxStyle.DropDownList;
             MonitorCB.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 204);
             MonitorCB.FormattingEnabled = true;
-            MonitorCB.Location = new Point(135, 15);
+            MonitorCB.Location = new Point(92, 15);
             MonitorCB.Name = "MonitorCB";
             MonitorCB.Size = new Size(158, 29);
             MonitorCB.TabIndex = 9;
@@ -255,7 +307,7 @@
             Preview_tp.Location = new Point(4, 24);
             Preview_tp.Name = "Preview_tp";
             Preview_tp.Padding = new Padding(3);
-            Preview_tp.Size = new Size(406, 428);
+            Preview_tp.Size = new Size(406, 134);
             Preview_tp.TabIndex = 1;
             Preview_tp.Text = "Предпросмотр";
             Preview_tp.UseVisualStyleBackColor = true;
@@ -265,7 +317,7 @@
             pictureBox1.Dock = DockStyle.Fill;
             pictureBox1.Location = new Point(3, 3);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(400, 422);
+            pictureBox1.Size = new Size(400, 128);
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
             // 
@@ -278,7 +330,7 @@
             Stats_tp.Controls.Add(CapturedFpsStatL);
             Stats_tp.Location = new Point(4, 24);
             Stats_tp.Name = "Stats_tp";
-            Stats_tp.Size = new Size(406, 428);
+            Stats_tp.Size = new Size(406, 134);
             Stats_tp.TabIndex = 3;
             Stats_tp.Text = "Статистика";
             Stats_tp.UseVisualStyleBackColor = true;
@@ -334,7 +386,7 @@
             Logs_tp.Controls.Add(LogRTS);
             Logs_tp.Location = new Point(4, 24);
             Logs_tp.Name = "Logs_tp";
-            Logs_tp.Size = new Size(406, 428);
+            Logs_tp.Size = new Size(406, 134);
             Logs_tp.TabIndex = 4;
             Logs_tp.Text = "Логи";
             Logs_tp.UseVisualStyleBackColor = true;
@@ -345,7 +397,7 @@
             LogRTS.Location = new Point(0, 0);
             LogRTS.Name = "LogRTS";
             LogRTS.ReadOnly = true;
-            LogRTS.Size = new Size(406, 428);
+            LogRTS.Size = new Size(406, 134);
             LogRTS.TabIndex = 0;
             LogRTS.Text = "";
             // 
@@ -376,7 +428,7 @@
             Settings_tp.Controls.Add(label2);
             Settings_tp.Location = new Point(4, 24);
             Settings_tp.Name = "Settings_tp";
-            Settings_tp.Size = new Size(406, 428);
+            Settings_tp.Size = new Size(406, 134);
             Settings_tp.TabIndex = 5;
             Settings_tp.Text = "Настройки";
             // 
@@ -649,11 +701,12 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Control;
-            ClientSize = new Size(414, 456);
+            ClientSize = new Size(414, 162);
             Controls.Add(MainControl);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "Form1";
             Text = "Мобильный дисплей сервер";
+            FormClosing += Form1_FormClosing;
             Load += Form1_Load;
             MainControl.ResumeLayout(false);
             Main_tp.ResumeLayout(false);
@@ -725,5 +778,9 @@
         private Label NetworkStatL;
         private Label FrameSizeStatL;
         private Label SentFpsStatL;
+        private Button RemoveDisplayBT;
+        private Button AddDisplayBT;
+        private Button ReloadDisplaysBT;
+        private Button OpenWindowsSettingsBT;
     }
 }

@@ -27,6 +27,7 @@ namespace RemoteDisplayApp
         public static bool shouldRestartServer = true;
         private static Screen? currentScreen;
         private static int buffer = -1;
+        public static bool isDriverInstalled = false;
 
         public static List<string> ReadFromJsonFile(string path, string group)
         {
@@ -128,7 +129,6 @@ namespace RemoteDisplayApp
         }
         public static string GetLocalIp()
         {
-
             using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
             {
                 socket.Connect("8.8.8.8", 65530);
@@ -141,7 +141,8 @@ namespace RemoteDisplayApp
                 try
                 {
                     List<object> list = new List<object>();
-                    var graphicsCards = screenCaptureService?.GetGraphicsCards();
+                screenCaptureService = new DX11ScreenCaptureService();
+                var graphicsCards = screenCaptureService?.GetGraphicsCards();
                     if (graphicsCards != null && graphicsCards.Any())
                     {
                         foreach (var card in graphicsCards)

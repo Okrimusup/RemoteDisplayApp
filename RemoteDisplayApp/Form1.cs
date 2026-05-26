@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static RemoteDisplayApp.Logic;
 using static RemoteDisplayApp.Statistic;
+using static RemoteDisplayApp.DisplayControl;
 namespace RemoteDisplayApp
 {
     internal partial class Form1 : Form, IUIController
@@ -197,19 +198,11 @@ namespace RemoteDisplayApp
             StreamTimer.Interval = settingFps;
             LocalIpL.Text = $"Локальный IP: {GetLocalIp()}";
             LocalIpL.Location = new Point((panel1.Size.Width - LocalIpL.Width) / 2, LocalIpL.Location.Y);
-            foreach (var display in GetDisplayList()) { 
+            foreach (var display in GetDisplayList())
+            {
                 MonitorCB.Items.Add(display);
             }
             MonitorCB.SelectedIndex = 0;
-        }
-
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            Log("Закрытие приложения");
-            shouldRestartServer = false;
-            StreamTimer.Stop();
-            PreviewTimer.Stop();
-            StopServer();
         }
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
@@ -237,8 +230,8 @@ namespace RemoteDisplayApp
                     break;
                 case "Monitor_tp":
                     PreviewTimer.Stop();
-                    this.MaximumSize = new Size(430, 125);
-                    this.MinimumSize = new Size(430, 125);
+                    this.MaximumSize = new Size(430, 201);
+                    this.MinimumSize = new Size(430, 201);
                     this.Size = new Size(430, 125);
                     break;
                 case "Main_tp":
@@ -264,7 +257,7 @@ namespace RemoteDisplayApp
 
         private async void StreamTimer_Tick(object sender, EventArgs e)
         {
-            if(!isServerRunning || isProcessing)
+            if (!isServerRunning || isProcessing)
                 return;
             try
             {
@@ -296,7 +289,7 @@ namespace RemoteDisplayApp
             finally { isProcessing = false; }
         }
 
-        
+
 
         private void PreviewTimer_Tick(object sender, EventArgs e)
         {
@@ -385,7 +378,7 @@ namespace RemoteDisplayApp
                 Statistic.UpdateStatistics();
                 CapturedFpsStatL.Text = $"Кадров/с захвата: 30";
                 SentFpsStatL.Text = $"Кадров/с отправки: 30";
-                FrameSizeStatL.Text = $"Средний размер кадра: {Statistic.AverageFrameSize/1024} КБайт";
+                FrameSizeStatL.Text = $"Средний размер кадра: {Statistic.AverageFrameSize / 1024} КБайт";
                 NetworkStatL.Text = $"Использование сети: {Statistic.NetworkUsage / 1024} КБайт/сек";
                 EncodeTimeStatL.Text = $"Среднее время кодирования: {Statistic.AverageDecodeTime} мс";
             }
@@ -397,6 +390,105 @@ namespace RemoteDisplayApp
             CloseConnection();
             InitializeDX11Capture(MonitorCB.SelectedIndex);
             Log("Сервер перезагружен");
+        }
+        private void OpenWindowsSettingsBT_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "ms-settings:display",
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                Log($"Ошибка при открытии настроек дисплея: {ex.Message}", LogLevel.Error);
+            }
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Log("Закрытие приложения");
+            if (isDriverInstalled)
+            {
+                e.Cancel = true;
+                string devconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DriverFiles", "devcon.exe");
+                int exitcode = UninstallDriver(devconPath, "mttvdd.inf");
+                if (exitcode == 0)
+                {
+                    e.Cancel = false;
+                }
+                else
+                {
+                    MessageBox.Show("Необходимы права администратора.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            shouldRestartServer = false;
+            StreamTimer.Stop();
+            PreviewTimer.Stop();
+            StopServer();
+        }
+
+        private void AddDisplayBT_Click(object sender, EventArgs e)
+        {
+            
+            try
+            {
+                string infFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DriverFiles", "MttVDD.inf");
+                string devconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DriverFiles", "devcon.exe");
+                InstallDriver(infFilePath, devconPath);
+                MonitorCB.Items.Clear();
+                foreach (var display in GetDisplayList())
+                {
+                    MonitorCB.Items.Add(display);
+                }
+                MonitorCB.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                Log($"Ошибка при добавлении монитора: {ex.Message}", LogLevel.Error, true);
+            }
+        }
+
+        private void RemoveDisplayBT_Click(object sender, EventArgs e)
+        {
+            
+            try
+            {
+                string infFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DriverFiles", "MttVDD.inf");
+                string devconPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DriverFiles", "devcon.exe");
+                UninstallDriver(devconPath, "mttvdd.inf");
+                MonitorCB.Items.Clear();
+                foreach (var display in GetDisplayList())
+                {
+                    MonitorCB.Items.Add(display);
+                }
+                MonitorCB.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                Log($"Ошибка при удалении монитора: {ex.Message}", LogLevel.Error, true);
+            }
+        }
+
+        private void ReloadDisplaysBT_Click(object sender, EventArgs e)
+        {
+            try 
+            {
+                MonitorCB.Items.Clear();
+                foreach (var display in GetDisplayList())
+                {
+                    MonitorCB.Items.Add(display);
+                }
+                MonitorCB.SelectedIndex = 0;
+                FindDriverOem("mttvdd.inf");
+            }
+            catch (Exception ex)
+            {
+                Log($"Ошибка при перезагрузке списка дисплеев: {ex.Message}", LogLevel.Error);
+            }
+            
         }
     }
 }
